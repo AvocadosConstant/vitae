@@ -41,4 +41,9 @@ public class Cell {
         Cell other = (Cell) o;
         return (this.x == other.getX() && this.y == other.getY());
     }
+
+    @Override
+    public String toString() {
+        return "Cell at (" + this.x + ", " + this.y + ")";
+    }
 }

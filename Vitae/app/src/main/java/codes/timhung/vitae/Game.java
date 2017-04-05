@@ -7,8 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+
+import java.util.HashSet;
 
 public class Game {
 
@@ -16,26 +19,42 @@ public class Game {
         START, PAUSED, RUNNING
     }
 
+    private static final int CELL_DIMENSION = 50;
+
     private Context context;
     private SurfaceHolder holder;
     private Rect screen;
     private Resources resources;
     private GameState state = GameState.START;
+    private BitmapFactory.Options options;
 
-    BitmapFactory.Options options;
+    private Paint cellPaint;
+    private HashSet<Cell> cells;
 
     public Game(Context context, Rect screen, SurfaceHolder holder, Resources resources) {
         this.context = context;
         this.screen = screen;
         this.holder = holder;
         this.resources = resources;
+
+        restartGame();
+    }
+
+    private void restartGame() {
+        state = GameState.RUNNING;
+
         options = new BitmapFactory.Options();
         options.inScaled = false;
-        restartGame();
+
+        cellPaint = new Paint();
+        cellPaint.setColor(resources.getColor(R.color.colorCell));
+
+        cells = new HashSet<>(1000, 0.5f);
     }
 
     public void onTouchEvent(MotionEvent event) {
         if (state == GameState.RUNNING) {
+            //cells.add(new Cell((int)(event.getX() / CELL_DIMENSION), (int)(event.getY() / CELL_DIMENSION)));
         } else if(state == GameState.START) {
             state = GameState.RUNNING;
         } else if(state == GameState.PAUSED) {
@@ -49,6 +68,9 @@ public class Game {
     public void update() {
         if(state == GameState.RUNNING){
             // Do stuff
+
+            // Randomly add cells for testing purposes
+            cells.add(new Cell((int)(Math.random() * 30), (int)(Math.random() * 50)));
         }
     }
 
@@ -59,7 +81,7 @@ public class Game {
         //Log.d("GAME_DRAW", "Locking canvas");
         Canvas canvas = holder.lockCanvas();
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(resources.getColor(R.color.colorGameBG));
             switch (state) {
                 case RUNNING:
                     drawGame(canvas);
@@ -78,9 +100,15 @@ public class Game {
      */
     private void drawGame(Canvas canvas) {
         //Log.d("GAME_DRAWGAME", "Trying to draw everything in the game!");
-    }
 
-    private void restartGame() {
-        state = GameState.RUNNING;
+        // Draw all cells
+        for(Cell cell : cells) {
+            canvas.drawRect(new Rect(
+                    cell.getX() * CELL_DIMENSION,
+                    cell.getY() * CELL_DIMENSION,
+                    cell.getX() * CELL_DIMENSION + CELL_DIMENSION,
+                    cell.getY() * CELL_DIMENSION + CELL_DIMENSION
+            ), cellPaint);
+        }
     }
 }
