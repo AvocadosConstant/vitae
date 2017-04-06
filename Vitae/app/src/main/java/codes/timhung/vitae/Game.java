@@ -41,8 +41,6 @@ public class Game {
     }
 
     private void restartGame() {
-        state = GameState.RUNNING;
-
         options = new BitmapFactory.Options();
         options.inScaled = false;
 
@@ -50,15 +48,24 @@ public class Game {
         cellPaint.setColor(resources.getColor(R.color.colorCell));
 
         cells = new HashSet<>(1000, 0.5f);
+
+        state = GameState.PAUSED;
+    }
+
+    public void pause() {
+        Log.d("PAUSE", "Pausing game");
+        if(state == GameState.RUNNING) state = GameState.PAUSED;
+        else if(state == GameState.PAUSED) state = GameState.RUNNING;
     }
 
     public void onTouchEvent(MotionEvent event) {
         if (state == GameState.RUNNING) {
-            //cells.add(new Cell((int)(event.getX() / CELL_DIMENSION), (int)(event.getY() / CELL_DIMENSION)));
+            // TODO
         } else if(state == GameState.START) {
             state = GameState.RUNNING;
         } else if(state == GameState.PAUSED) {
-            state = GameState.RUNNING;
+            // TODO
+            cells.add(new Cell((int)(event.getX() / CELL_DIMENSION), (int)(event.getY() / CELL_DIMENSION)));
         }
     }
 
@@ -81,9 +88,13 @@ public class Game {
         //Log.d("GAME_DRAW", "Locking canvas");
         Canvas canvas = holder.lockCanvas();
         if (canvas != null) {
-            canvas.drawColor(resources.getColor(R.color.colorGameBG));
+            if(state == GameState.RUNNING) canvas.drawColor(resources.getColor(R.color.colorGameBG));
+            else canvas.drawColor(Color.RED);
             switch (state) {
                 case RUNNING:
+                    drawGame(canvas);
+                    break;
+                case PAUSED:
                     drawGame(canvas);
                     break;
                 case START:

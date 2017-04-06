@@ -7,7 +7,7 @@ public class GameThread extends Thread {
     private volatile boolean running = true;
 
     // Frames per second
-    private final long FRAME_RATE = 1;
+    private final long FRAME_RATE = 24;
 
     // Seconds per frame
     private final long FRAME_DURATION = 1000 / FRAME_RATE;

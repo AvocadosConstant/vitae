@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Vitae</string>
+    <string name="action_pause">Pause</string>
 </resources>

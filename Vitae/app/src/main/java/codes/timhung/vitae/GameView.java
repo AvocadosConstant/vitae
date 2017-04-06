@@ -12,7 +12,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     SurfaceHolder holder;
     GameThread gameThread;
-    Game game;
+    public Game game;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
