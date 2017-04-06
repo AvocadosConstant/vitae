@@ -19,7 +19,10 @@ public class Game {
         START, PAUSED, RUNNING
     }
 
-    private static final int CELL_DIMENSION = 50;
+    private static final int CELL_DIMENSION = 20;
+    private static final int LIFE_MIN_THRESH = 2;
+    private static final int LIFE_MAX_THRESH = 3;
+    private static final int LIFE_SPAWN_THRESH = 3;
 
     private Context context;
     private SurfaceHolder holder;
@@ -76,8 +79,32 @@ public class Game {
         if(state == GameState.RUNNING){
             // Do stuff
 
-            // Randomly add cells for testing purposes
-            cells.add(new Cell((int)(Math.random() * 30), (int)(Math.random() * 50)));
+            // Handle Life logic
+            HashSet<Cell> spawnCandidates = new HashSet<>(1000, .5f);
+            HashSet<Cell> nextCells = new HashSet<>(1000, .5f);
+            int neighborCount;
+            int cellsStayedAlive = 0;
+
+            for(Cell liveCell : cells) {
+                // Count neighbors
+                neighborCount = liveCell.countNeighbors(cells);
+                spawnCandidates.addAll(liveCell.getDeadNeighbors(cells));
+
+                // Satisfiles remaining alive rule
+                if(LIFE_MIN_THRESH <= neighborCount && neighborCount <= LIFE_MAX_THRESH) {
+                    nextCells.add(liveCell);
+                    cellsStayedAlive++;
+                }
+            }
+
+            for(Cell candidate : spawnCandidates) {
+                neighborCount = candidate.countNeighbors(cells);
+                if(neighborCount == LIFE_SPAWN_THRESH) nextCells.add(candidate);
+            }
+
+            Log.d("UPDATE", "Update report: Originally " + cells.size() + " cells. " + cellsStayedAlive
+                    + " remained alive and " + (cells.size() - cellsStayedAlive) + " died.");
+            cells = nextCells;
         }
     }
 

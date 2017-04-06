@@ -1,5 +1,7 @@
 package codes.timhung.vitae;
 
+import java.util.HashSet;
+
 public class Cell {
 
     private final int x;
@@ -13,6 +15,49 @@ public class Cell {
     public int getX() { return this.x; }
 
     public int getY() { return this.y; }
+
+    public HashSet<Cell> getAllNeighbors(HashSet<Cell> cells) {
+        HashSet<Cell> neighbors = new HashSet<>(8);
+        // Loop through neighbors
+        for(int i = this.x - 1; i <= this.x + 1; i++) {
+            for(int j = this.y - 1; j <= this.y + 1; j++) {
+                // Verify not counting itself
+                if(i != this.x || j != this.y) {
+                    if(cells.contains(new Cell(i, j))) neighbors.add(new Cell(i, j));
+                    else neighbors.add(new Cell(i, j));
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    public HashSet<Cell> getDeadNeighbors(HashSet<Cell> cells) {
+        HashSet<Cell> neighbors = new HashSet<>(8);
+        // Loop through neighbors
+        for(int i = this.x - 1; i <= this.x + 1; i++) {
+            for(int j = this.y - 1; j <= this.y + 1; j++) {
+                // Verify not counting itself
+                if(i != this.x || j != this.y) {
+                    if(!cells.contains(new Cell(i, j))) neighbors.add(new Cell(i, j));
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    public int countNeighbors(HashSet<Cell> cells) {
+        int neighborCount = 0;
+        // Loop through neighbors
+        for(int i = this.x - 1; i <= this.x + 1; i++) {
+            for(int j = this.y - 1; j <= this.y + 1; j++) {
+                // Verify not counting itself
+                if(i != this.x || j != this.y) {
+                    if(cells.contains(new Cell(i, j))) neighborCount++;
+                }
+            }
+        }
+        return neighborCount;
+    }
 
     @Override
     /**
