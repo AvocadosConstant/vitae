@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorGameBG">#272822</color>
     <color name="colorCell">#A6E22E</color>
+    <color name="colorDrawnCell">#F92672</color>
 </resources>

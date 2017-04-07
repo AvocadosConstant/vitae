@@ -10,7 +10,6 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-
 import java.util.HashSet;
 
 public class Game {
@@ -32,7 +31,9 @@ public class Game {
     private BitmapFactory.Options options;
 
     private Paint cellPaint;
+    private Paint drawnCellPaint;
     private HashSet<Cell> cells;
+    private HashSet<Cell> drawnCells;
 
     public Game(Context context, Rect screen, SurfaceHolder holder, Resources resources) {
         this.context = context;
@@ -50,7 +51,11 @@ public class Game {
         cellPaint = new Paint();
         cellPaint.setColor(resources.getColor(R.color.colorCell));
 
+        drawnCellPaint = new Paint();
+        drawnCellPaint.setColor(resources.getColor(R.color.colorDrawnCell));
+
         cells = new HashSet<>(1000, 0.5f);
+        drawnCells = new HashSet<>(200, 0.5f);
 
         state = GameState.PAUSED;
     }
@@ -64,11 +69,15 @@ public class Game {
     public void onTouchEvent(MotionEvent event) {
         if (state == GameState.RUNNING) {
             // TODO
-        } else if(state == GameState.START) {
-            state = GameState.RUNNING;
         } else if(state == GameState.PAUSED) {
             // TODO
-            cells.add(new Cell((int)(event.getX() / CELL_DIMENSION), (int)(event.getY() / CELL_DIMENSION)));
+        } else if(state == GameState.START) {
+            state = GameState.RUNNING;
+        }
+
+        // Handle hand drawn cells
+        synchronized (drawnCells) {
+            drawnCells.add(new Cell((int) (event.getX() / CELL_DIMENSION), (int) (event.getY() / CELL_DIMENSION)));
         }
     }
 
@@ -77,7 +86,10 @@ public class Game {
      */
     public void update() {
         if(state == GameState.RUNNING){
-            // Do stuff
+            synchronized(drawnCells) {
+                cells.addAll(drawnCells);
+                drawnCells.clear();
+            }
 
             // Handle Life logic
             HashSet<Cell> spawnCandidates = new HashSet<>(1000, .5f);
@@ -116,7 +128,9 @@ public class Game {
         Canvas canvas = holder.lockCanvas();
         if (canvas != null) {
             if(state == GameState.RUNNING) canvas.drawColor(resources.getColor(R.color.colorGameBG));
-            else canvas.drawColor(Color.RED);
+            else canvas.drawColor(Color.BLACK);
+            drawGame(canvas);
+            /*
             switch (state) {
                 case RUNNING:
                     drawGame(canvas);
@@ -128,6 +142,7 @@ public class Game {
                     drawGame(canvas);
                     break;
             }
+            */
             holder.unlockCanvasAndPost(canvas);
         }
     }
@@ -139,7 +154,18 @@ public class Game {
     private void drawGame(Canvas canvas) {
         //Log.d("GAME_DRAWGAME", "Trying to draw everything in the game!");
 
-        // Draw all cells
+        synchronized(drawnCells) {
+            // Draw all cells
+            for (Cell cell : drawnCells) {
+                canvas.drawRect(new Rect(
+                        cell.getX() * CELL_DIMENSION,
+                        cell.getY() * CELL_DIMENSION,
+                        cell.getX() * CELL_DIMENSION + CELL_DIMENSION,
+                        cell.getY() * CELL_DIMENSION + CELL_DIMENSION
+                ), drawnCellPaint);
+            }
+        }
+
         for(Cell cell : cells) {
             canvas.drawRect(new Rect(
                     cell.getX() * CELL_DIMENSION,
