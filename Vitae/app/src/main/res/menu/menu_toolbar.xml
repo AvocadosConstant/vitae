@@ -5,8 +5,8 @@
     tools:context=".GameActivity">
 
     <item
-        android:id="@+id/action_pause"
-        android:title="@string/action_pause"
-        android:icon="@mipmap/ic_launcher"
+        android:id="@+id/action_pause_resume"
+        android:title="@string/action_pause_resume"
+        android:icon="@drawable/ic_action_resume"
         app:showAsAction="always" />
 </menu>

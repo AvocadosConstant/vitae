@@ -18,7 +18,8 @@ public class Game {
         START, PAUSED, RUNNING
     }
 
-    private static final int CELL_DIMENSION = 20;
+    private static final int CELL_DIMENSION = 50;
+    private static final int GRID_LINES_WIDTH = CELL_DIMENSION / 10;
     private static final int LIFE_MIN_THRESH = 2;
     private static final int LIFE_MAX_THRESH = 3;
     private static final int LIFE_SPAWN_THRESH = 3;
@@ -60,8 +61,7 @@ public class Game {
         state = GameState.PAUSED;
     }
 
-    public void pause() {
-        Log.d("PAUSE", "Pausing game");
+    public void togglePauseResume() {
         if(state == GameState.RUNNING) state = GameState.PAUSED;
         else if(state == GameState.PAUSED) state = GameState.RUNNING;
     }
@@ -160,8 +160,8 @@ public class Game {
                 canvas.drawRect(new Rect(
                         cell.getX() * CELL_DIMENSION,
                         cell.getY() * CELL_DIMENSION,
-                        cell.getX() * CELL_DIMENSION + CELL_DIMENSION,
-                        cell.getY() * CELL_DIMENSION + CELL_DIMENSION
+                        cell.getX() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH,
+                        cell.getY() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH
                 ), drawnCellPaint);
             }
         }
@@ -170,8 +170,8 @@ public class Game {
             canvas.drawRect(new Rect(
                     cell.getX() * CELL_DIMENSION,
                     cell.getY() * CELL_DIMENSION,
-                    cell.getX() * CELL_DIMENSION + CELL_DIMENSION,
-                    cell.getY() * CELL_DIMENSION + CELL_DIMENSION
+                    cell.getX() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH,
+                    cell.getY() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH
             ), cellPaint);
         }
     }

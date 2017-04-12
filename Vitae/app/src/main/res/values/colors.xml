@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#171812</color>
+    <color name="colorPrimaryDark">#101010</color>
+    <color name="colorAccent">#FD971F</color>
     <color name="colorGameBG">#272822</color>
     <color name="colorCell">#A6E22E</color>
     <color name="colorDrawnCell">#F92672</color>

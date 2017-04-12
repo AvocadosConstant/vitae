@@ -13,6 +13,9 @@ public class GameActivity extends ActionBarActivity {
     private Toolbar toolbar;
     private GameView gameView;
 
+    private MenuItem pauseMenuItem;
+    private boolean isPaused;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,13 +28,23 @@ public class GameActivity extends ActionBarActivity {
         toolbar.setVisibility(View.VISIBLE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        isPaused = true;
     }
 
     public void handleToolbarAction(int itemId) {
         Log.d("handleToolbarAction", "Touched item " + itemId);
         switch(itemId) {
-            case R.id.action_pause:
-                gameView.game.pause();
+            case R.id.action_pause_resume:
+                // Toggle pause or resume
+                gameView.game.togglePauseResume();
+                isPaused = !isPaused;
+
+                // Change resume/pause button icon. If paused, show resume, vice versa.
+                // TODO: Move to onPrepareOptionsMenu?
+                if(isPaused) pauseMenuItem.setIcon(R.drawable.ic_action_resume);
+                else pauseMenuItem.setIcon(R.drawable.ic_action_pause);
+
                 break;
         }
     }
@@ -39,6 +52,10 @@ public class GameActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        pauseMenuItem = menu.findItem(R.id.action_pause_resume);
+        pauseMenuItem.setIcon(R.drawable.ic_action_resume);
+        isPaused = true;
+
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

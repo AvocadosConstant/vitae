@@ -7,10 +7,10 @@ public class GameThread extends Thread {
     private volatile boolean running = true;
 
     // Frames per second
-    private final long FRAME_RATE = 12;
+    private final float FRAME_RATE = 12f;
 
     // Seconds per frame
-    private final long FRAME_DURATION = 1000 / FRAME_RATE;
+    private final long FRAME_DURATION = (long)(1000 / FRAME_RATE);
 
     public GameThread(Game game) {
         this.game = game;
