@@ -1,5 +1,9 @@
 package codes.timhung.vitae;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+
 import java.util.HashSet;
 
 public class Cell {
@@ -10,6 +14,15 @@ public class Cell {
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void draw(Canvas canvas, int dim, int lineWidth, Paint paint) {
+        canvas.drawRect(new Rect(
+                this.x * dim + lineWidth,
+                this.y * dim + lineWidth,
+                this.x * dim + dim - lineWidth,
+                this.y * dim + dim - lineWidth
+        ), paint);
     }
 
     public int getX() { return this.x; }

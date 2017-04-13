@@ -1,5 +1,6 @@
 package codes.timhung.vitae;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -23,12 +24,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.d("GAMEVIEW", "created");
-        game = new Game(
-                getContext(),
-                new Rect(0, 0, getWidth(), getHeight()),
-                holder,
-                getResources());
-        gameThread = new GameThread(game);
+        ((GameActivity)getContext()).setPauseResumeIcon(R.drawable.ic_action_resume);
+        if(game == null) {
+            game = new Game(
+                    getContext(),
+                    new Rect(0, 0, getWidth(), getHeight()),
+                    holder,
+                    getResources());
+            gameThread = new GameThread(game);
+        }
+        gameThread.restart();
         gameThread.start();
     }
 
@@ -43,6 +48,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(gameThread != null) {
             gameThread.shutdown();
 
+            /*
             while(gameThread != null) {
                 try {
                     gameThread.join();
@@ -50,6 +56,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 } catch (InterruptedException e) {
                 }
             }
+            */
         }
     }
 

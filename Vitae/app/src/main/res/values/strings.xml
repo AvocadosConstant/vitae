@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Vitae</string>
     <string name="action_pause_resume">Pause or Resume</string>
+    <string name="action_draw">Draw cells</string>
+    <string name="action_restart">Restart</string>
+    <string name="action_toggle_grid">Toggle Grid</string>
 </resources>

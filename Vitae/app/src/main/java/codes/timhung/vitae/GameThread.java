@@ -40,7 +40,10 @@ public class GameThread extends Thread {
         }
     }
 
+    public void restart() { running = true; }
+
     public void shutdown() {
         running = false;
+        game.pause();
     }
 }

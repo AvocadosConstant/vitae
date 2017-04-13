@@ -9,4 +9,23 @@
         android:title="@string/action_pause_resume"
         android:icon="@drawable/ic_action_resume"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_restart"
+        android:title="@string/action_restart"
+        android:icon="@drawable/ic_action_restart"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_draw"
+        android:title="@string/action_draw"
+        android:icon="@drawable/ic_action_pencil"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_toggle_grid"
+        android:title="@string/action_toggle_grid"
+        android:icon="@drawable/ic_action_grid_on"
+        app:showAsAction="always" />
+
 </menu>

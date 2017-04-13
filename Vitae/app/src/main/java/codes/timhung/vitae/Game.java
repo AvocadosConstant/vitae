@@ -19,7 +19,9 @@ public class Game {
     }
 
     private static final int CELL_DIMENSION = 50;
-    private static final int GRID_LINES_WIDTH = CELL_DIMENSION / 10;
+    private static final int GRID_LINES_RATIO = 20;
+    private static int GRID_LINES_WIDTH = 0;
+
     private static final int LIFE_MIN_THRESH = 2;
     private static final int LIFE_MAX_THRESH = 3;
     private static final int LIFE_SPAWN_THRESH = 3;
@@ -45,7 +47,7 @@ public class Game {
         restartGame();
     }
 
-    private void restartGame() {
+    public void restartGame() {
         options = new BitmapFactory.Options();
         options.inScaled = false;
 
@@ -61,9 +63,30 @@ public class Game {
         state = GameState.PAUSED;
     }
 
-    public void togglePauseResume() {
+    // Returns true if paused
+    public boolean togglePauseResume() {
         if(state == GameState.RUNNING) state = GameState.PAUSED;
         else if(state == GameState.PAUSED) state = GameState.RUNNING;
+        return state == GameState.PAUSED;
+    }
+
+    public void pause() {
+        state = GameState.PAUSED;
+    }
+
+    public boolean isPaused() { return state == GameState.PAUSED; }
+
+    /**
+     * Toggle cell grid on or off
+     * @return true if the grid is enabled
+     */
+    public boolean toggleGrid() {
+        if(GRID_LINES_WIDTH > 0) {
+            GRID_LINES_WIDTH = 0;
+            return false;
+        }
+        GRID_LINES_WIDTH = CELL_DIMENSION / GRID_LINES_RATIO;
+        return true;
     }
 
     public void onTouchEvent(MotionEvent event) {
@@ -121,28 +144,23 @@ public class Game {
     }
 
     /**
-     * Decides whether to draw
+     * Decides what to draw
      */
     public void draw() {
         //Log.d("GAME_DRAW", "Locking canvas");
         Canvas canvas = holder.lockCanvas();
         if (canvas != null) {
-            if(state == GameState.RUNNING) canvas.drawColor(resources.getColor(R.color.colorGameBG));
-            else canvas.drawColor(Color.BLACK);
-            drawGame(canvas);
-            /*
             switch (state) {
                 case RUNNING:
-                    drawGame(canvas);
+                    canvas.drawColor(resources.getColor(R.color.colorGameBG));
                     break;
                 case PAUSED:
-                    drawGame(canvas);
+                    canvas.drawColor(Color.BLACK);
                     break;
                 case START:
-                    drawGame(canvas);
                     break;
             }
-            */
+            drawGame(canvas);
             holder.unlockCanvasAndPost(canvas);
         }
     }
@@ -152,27 +170,16 @@ public class Game {
      * @param canvas Canvas to be drawn on
      */
     private void drawGame(Canvas canvas) {
-        //Log.d("GAME_DRAWGAME", "Trying to draw everything in the game!");
-
+        // Draw hand drawn cells
         synchronized(drawnCells) {
-            // Draw all cells
             for (Cell cell : drawnCells) {
-                canvas.drawRect(new Rect(
-                        cell.getX() * CELL_DIMENSION,
-                        cell.getY() * CELL_DIMENSION,
-                        cell.getX() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH,
-                        cell.getY() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH
-                ), drawnCellPaint);
+                cell.draw(canvas, CELL_DIMENSION, GRID_LINES_WIDTH, drawnCellPaint);
             }
         }
 
+        // Draw processed cells
         for(Cell cell : cells) {
-            canvas.drawRect(new Rect(
-                    cell.getX() * CELL_DIMENSION,
-                    cell.getY() * CELL_DIMENSION,
-                    cell.getX() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH,
-                    cell.getY() * CELL_DIMENSION + CELL_DIMENSION - GRID_LINES_WIDTH
-            ), cellPaint);
+            cell.draw(canvas, CELL_DIMENSION, GRID_LINES_WIDTH, cellPaint);
         }
     }
 }

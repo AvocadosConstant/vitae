@@ -14,6 +14,7 @@ public class GameActivity extends ActionBarActivity {
     private GameView gameView;
 
     private MenuItem pauseMenuItem;
+    private MenuItem gridMenuItem;
     private boolean isPaused;
 
     @Override
@@ -38,22 +39,33 @@ public class GameActivity extends ActionBarActivity {
             case R.id.action_pause_resume:
                 // Toggle pause or resume
                 gameView.game.togglePauseResume();
-                isPaused = !isPaused;
 
                 // Change resume/pause button icon. If paused, show resume, vice versa.
                 // TODO: Move to onPrepareOptionsMenu?
-                if(isPaused) pauseMenuItem.setIcon(R.drawable.ic_action_resume);
-                else pauseMenuItem.setIcon(R.drawable.ic_action_pause);
+                if(gameView.game.isPaused()) setPauseResumeIcon(R.drawable.ic_action_resume);
+                else setPauseResumeIcon(R.drawable.ic_action_pause);
 
                 break;
+            case R.id.action_toggle_grid:
+                if(gameView.game.toggleGrid()) gridMenuItem.setIcon(R.drawable.ic_action_grid_off);
+                else gridMenuItem.setIcon(R.drawable.ic_action_grid_on);
+                break;
+            case R.id.action_restart:
+                gameView.game.restartGame();
+                setPauseResumeIcon(R.drawable.ic_action_resume);
         }
+    }
+
+    public void setPauseResumeIcon(int id) {
+        if(pauseMenuItem != null) pauseMenuItem.setIcon(id);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         pauseMenuItem = menu.findItem(R.id.action_pause_resume);
-        pauseMenuItem.setIcon(R.drawable.ic_action_resume);
+        gridMenuItem = menu.findItem(R.id.action_toggle_grid);
+        //pauseMenuItem.setIcon(R.drawable.ic_action_resume);
         isPaused = true;
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
