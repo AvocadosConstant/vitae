@@ -23,6 +23,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_pan"
+        android:title="@string/action_pan"
+        android:icon="@drawable/ic_action_pan"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_toggle_grid"
         android:title="@string/action_toggle_grid"
         android:icon="@drawable/ic_action_grid_on"

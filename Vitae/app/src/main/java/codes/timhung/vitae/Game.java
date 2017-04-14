@@ -18,6 +18,10 @@ public class Game {
         START, PAUSED, RUNNING
     }
 
+    private enum ToolState {
+        DRAW, PAN
+    }
+
     private static final int CELL_DIMENSION = 50;
     private static final int GRID_LINES_RATIO = 20;
     private static int GRID_LINES_WIDTH = 0;
@@ -26,11 +30,21 @@ public class Game {
     private static final int LIFE_MAX_THRESH = 3;
     private static final int LIFE_SPAWN_THRESH = 3;
 
+    private static float prevCanvasOffsetX;
+    private static float prevCanvasOffsetY;
+
+    private static float canvasOffsetX;
+    private static float canvasOffsetY;
+
+    private static float startDragX = 0;
+    private static float startDragY = 0;
+
     private Context context;
     private SurfaceHolder holder;
     private Rect screen;
     private Resources resources;
     private GameState state = GameState.START;
+    private ToolState tool = ToolState.DRAW;
     private BitmapFactory.Options options;
 
     private Paint cellPaint;
@@ -60,6 +74,11 @@ public class Game {
         cells = new HashSet<>(1000, 0.5f);
         drawnCells = new HashSet<>(200, 0.5f);
 
+        prevCanvasOffsetX = 0;
+        prevCanvasOffsetY = 0;
+
+        canvasOffsetX = 0;
+        canvasOffsetY = 0;
         state = GameState.PAUSED;
     }
 
@@ -89,18 +108,49 @@ public class Game {
         return true;
     }
 
+    public void setToolDraw() { tool = ToolState.DRAW; }
+
+    public void setToolPan() { tool = ToolState.PAN; }
+
     public void onTouchEvent(MotionEvent event) {
+        int eventAction = event.getAction();
+
         if (state == GameState.RUNNING) {
-            // TODO
         } else if(state == GameState.PAUSED) {
-            // TODO
         } else if(state == GameState.START) {
             state = GameState.RUNNING;
         }
 
-        // Handle hand drawn cells
-        synchronized (drawnCells) {
-            drawnCells.add(new Cell((int) (event.getX() / CELL_DIMENSION), (int) (event.getY() / CELL_DIMENSION)));
+        switch(tool) {
+            case DRAW:
+                // Handle hand drawn cells
+                synchronized (drawnCells) {
+                    drawnCells.add(
+                        new Cell(
+                            (int)((event.getX() - prevCanvasOffsetX) / CELL_DIMENSION),
+                            (int)((event.getY() - prevCanvasOffsetY) / CELL_DIMENSION)));
+                }
+                break;
+            case PAN:
+                switch (eventAction) {
+                    case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a ball
+                        startDragX = event.getX();
+                        startDragY = event.getY();
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:   // touch drag with the ball
+                        canvasOffsetX = event.getX() - startDragX;
+                        canvasOffsetY = event.getY() - startDragY;
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        prevCanvasOffsetX += canvasOffsetX;
+                        prevCanvasOffsetY += canvasOffsetY;
+                        canvasOffsetX = 0;
+                        canvasOffsetY = 0;
+                        break;
+                }
+                break;
         }
     }
 
@@ -170,6 +220,9 @@ public class Game {
      * @param canvas Canvas to be drawn on
      */
     private void drawGame(Canvas canvas) {
+        Log.d("DRAWGAME", "Offset canvas by (" + (prevCanvasOffsetX + canvasOffsetX) + ", " + (prevCanvasOffsetY + canvasOffsetY) + ")");
+
+        canvas.translate(prevCanvasOffsetX + canvasOffsetX, prevCanvasOffsetY + canvasOffsetY);
         // Draw hand drawn cells
         synchronized(drawnCells) {
             for (Cell cell : drawnCells) {

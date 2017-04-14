@@ -53,6 +53,13 @@ public class GameActivity extends ActionBarActivity {
             case R.id.action_restart:
                 gameView.game.restartGame();
                 setPauseResumeIcon(R.drawable.ic_action_resume);
+                break;
+            case R.id.action_draw:
+                gameView.game.setToolDraw();
+                break;
+            case R.id.action_pan:
+                gameView.game.setToolPan();
+                break;
         }
     }
 

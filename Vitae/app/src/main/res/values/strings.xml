@@ -4,4 +4,5 @@
     <string name="action_draw">Draw cells</string>
     <string name="action_restart">Restart</string>
     <string name="action_toggle_grid">Toggle Grid</string>
+    <string name="action_pan">Pan tool</string>
 </resources>
