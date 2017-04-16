@@ -5,4 +5,5 @@
     <string name="action_restart">Restart</string>
     <string name="action_toggle_grid">Toggle Grid</string>
     <string name="action_pan">Pan tool</string>
+    <string name="action_toggle_zoom">Pan tool</string>
 </resources>

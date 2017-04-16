@@ -22,7 +22,9 @@ public class Game {
         DRAW, PAN
     }
 
-    private static final int CELL_DIMENSION = 50;
+    private static final int CELL_DIMENSION_BIG = 60;
+    private static final int CELL_DIMENSION_SMALL = 20;
+    private static int CELL_DIMENSION = CELL_DIMENSION_BIG;
     private static final int GRID_LINES_RATIO = 20;
     private static int GRID_LINES_WIDTH = 0;
 
@@ -100,11 +102,25 @@ public class Game {
      * @return true if the grid is enabled
      */
     public boolean toggleGrid() {
+        //TODO: Fix centering
         if(GRID_LINES_WIDTH > 0) {
             GRID_LINES_WIDTH = 0;
             return false;
         }
         GRID_LINES_WIDTH = CELL_DIMENSION / GRID_LINES_RATIO;
+        return true;
+    }
+
+    /**
+     * Toggle zoom in our out
+     * @return true if zoomed in
+     */
+    public boolean toggleZoom() {
+        if(CELL_DIMENSION == CELL_DIMENSION_BIG) {
+            CELL_DIMENSION = CELL_DIMENSION_SMALL;
+            return false;
+        }
+        CELL_DIMENSION = CELL_DIMENSION_BIG;
         return true;
     }
 

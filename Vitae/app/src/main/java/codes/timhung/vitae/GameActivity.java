@@ -15,6 +15,7 @@ public class GameActivity extends ActionBarActivity {
 
     private MenuItem pauseMenuItem;
     private MenuItem gridMenuItem;
+    private MenuItem zoomMenuItem;
     private boolean isPaused;
 
     @Override
@@ -54,6 +55,10 @@ public class GameActivity extends ActionBarActivity {
                 gameView.game.restartGame();
                 setPauseResumeIcon(R.drawable.ic_action_resume);
                 break;
+            case R.id.action_toggle_zoom:
+                if(gameView.game.toggleZoom()) zoomMenuItem.setIcon(R.drawable.ic_action_zoom_out);
+                else zoomMenuItem.setIcon(R.drawable.ic_action_zoom_in);
+                break;
             case R.id.action_draw:
                 gameView.game.setToolDraw();
                 break;
@@ -72,6 +77,8 @@ public class GameActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         pauseMenuItem = menu.findItem(R.id.action_pause_resume);
         gridMenuItem = menu.findItem(R.id.action_toggle_grid);
+        zoomMenuItem = menu.findItem(R.id.action_toggle_zoom);
+
         //pauseMenuItem.setIcon(R.drawable.ic_action_resume);
         isPaused = true;
 
